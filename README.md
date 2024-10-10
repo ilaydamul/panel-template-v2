@@ -1,70 +1,88 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Panel Template Project
 
-## Available Scripts
+This project serves as a template for a panel application with both an API and frontend setup. Below is a detailed guide on the required dependencies, environment setup, and configurations needed for both the API and frontend.
 
-In the project directory, you can run:
+## Backend Setup (API)
 
-### `npm start`
+To set up the backend, the following npm packages are required:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```bash
+npm i express dotenv mysql axios cors jsonwebtoken path bcrypt body-parser cookie-parser express-session @google-cloud/storage nodemon
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Environment Variables
+You need to configure an `.env` file in the root of your API project with the following details:
 
-### `npm test`
+```
+PROJECT_ID=your_google_project_id
+KEYFILENAME=path_to_your_google_cloud_keyfile.json
+BUCKET_NAME=your_google_cloud_storage_bucket_name
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Google Cloud Storage Setup
 
-### `npm run build`
+1. Go to the Google Cloud Console.
+2. Create a project and get your **PROJECT_ID**.
+3. Download the JSON key file for your project and store it securely.
+4. Set the **KEYFILENAME** in the `.env` file as the path to the downloaded JSON key file.
+5. Set your **BUCKET_NAME** to the name of your Google Cloud Storage bucket.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Running the API
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+To run the API, you can use `nodemon` for automatic restarts during development:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+nodemon server.js
+```
 
-### `npm run eject`
+Make sure to set up your MySQL database according to your application requirements.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Frontend Setup
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+To set up the frontend, you will need the following npm packages:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+npm i primeicons react-toastify sweetalert2 js-cookie formik yup axios
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+These packages are used for:
 
-## Learn More
+- **PrimeIcons**: UI icons
+- **React-Toastify**: Toast notifications
+- **SweetAlert2**: Alert messages
+- **js-cookie**: Cookie management
+- **Formik & Yup**: Form validation
+- **Axios**: HTTP client for making API requests
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Running the Frontend
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+To start the frontend, use the following command in the project root:
 
-### Code Splitting
+```bash
+npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Make sure to configure the API endpoints correctly in the frontend for communication with the backend.
 
-### Analyzing the Bundle Size
+## Project Structure
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```
+.
+├── api                 # Backend (API) folder
+├── public              # Public assets for the frontend
+├── src                 # React source code for the frontend
+├── .gitignore          # Files and folders to be ignored by Git
+├── package.json        # NPM configuration file
+├── package-lock.json   # NPM lock file for versioning
+└── README.md           # Project documentation
+```
 
-### Making a Progressive Web App
+## Additional Notes
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- Ensure that both the backend and frontend are properly connected, particularly regarding the API endpoints and storage solutions.
+- You can extend this template according to your project requirements.
 
-### Advanced Configuration
+## License
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This project is licensed under the MIT License.

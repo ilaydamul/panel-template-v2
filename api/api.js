@@ -1,5 +1,3 @@
-// npm i express dotenv mysql axios cors jsonwebtoken path bcrypt body-parser cookie-parser express-session @google-cloud/storage nodemon
-
 const express = require("express");
 require("dotenv").config();
 const mysql = require("mysql");
