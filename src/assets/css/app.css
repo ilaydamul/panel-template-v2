@@ -228,3 +228,10 @@ td button.p-button span {
 ul{
   padding: .25rem;
 }
+
+.form_style {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
