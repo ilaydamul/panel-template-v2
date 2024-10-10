@@ -9,6 +9,7 @@ import App from "./App";
 
 import 'react-toastify/dist/ReactToastify.css';
 import 'primeicons/primeicons.css';
+import "primereact/resources/themes/viva-light/theme.css";
 
 
 import { BrowserRouter } from "react-router-dom";
