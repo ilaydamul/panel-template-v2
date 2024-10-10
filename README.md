@@ -43,7 +43,7 @@ Make sure to set up your MySQL database according to your application requiremen
 To set up the frontend, you will need the following npm packages:
 
 ```bash
-npm i primeicons react-toastify sweetalert2 js-cookie formik yup axios
+npm i primeicons react-toastify sweetalert2 js-cookie formik yup axios quill primereact
 ```
 
 These packages are used for:
