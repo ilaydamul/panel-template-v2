@@ -20,34 +20,92 @@ const keyFilename = process.env.KEYFILENAME;
 const bucketName = process.env.BUCKET_NAME;
 
 const storage = new Storage({ projectId, keyFilename });
+// Magic bytes (dosya türleri için baştaki baytlar)
+const magicBytes = {
+  "image/png": [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a],
+  "image/jpeg": [0xff, 0xd8, 0xff],
+  "application/pdf": [0x25, 0x50, 0x44, 0x46], // PDF
+  "application/msword": [0xd0, 0xcf, 0x11, 0xe0], // Word (DOC)
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
+    0x50, 0x4b, 0x03, 0x04,
+  ], // Word (DOCX - ZIP format)
+};
+
+// Dosya türünü kontrol et
+function detectFileType(fileBuffer) {
+  for (let mimeType in magicBytes) {
+    const magic = magicBytes[mimeType];
+    let match = true;
+
+    for (let i = 0; i < magic.length; i++) {
+      if (fileBuffer[i] !== magic[i]) {
+        match = false;
+        break;
+      }
+    }
+
+    if (match) {
+      return mimeType;
+    }
+  }
+  return "Unknown"; // Tanınmayan dosya türü
+}
 
 async function uploadFile(newFile, currentFile = "") {
   try {
-    // Dosya boyutu kontrolü
     if (newFile === currentFile) {
       return currentFile;
-    } else {
-      if (newFile.length > 180) {
-        const bucket = storage.bucket(bucketName);
-        let fileBuffer;
-        let fileName;
-
-        fileBuffer = await convertBuffer(newFile); // Resmi Buffera çeviriyorsun
-        fileName = Date.now() + ".png"; // Resim dosyasına uygun bir isim oluşturuyorsun
-
-        // Google Cloud Storage'a dosyayı kaydet
-        await bucket.file(fileName).save(fileBuffer);
-
-        return `https://storage.googleapis.com/${bucketName}/${fileName}`;
-      } else {
-        return currentFile; // Dosya boyutu küçükse işlem yapmadan döner
-      }
     }
+
+    // Base64'ten buffer'a dönüştür
+    const base64Content = newFile.replace(/^data:.*;base64,/, ""); // Başlığı temizle
+    const fileBuffer = Buffer.from(base64Content, 'base64');
+
+    // Dosya türünü belirle
+    const fileType = detectFileType(fileBuffer);
+
+    // Eğer dosya türü geçerli değilse hata fırlat
+    if (fileType === 'Unknown') {
+      throw new Error("Desteklenmeyen dosya türü.");
+    }
+
+    const bucket = storage.bucket(bucketName);
+
+    // Dosyanın uzantısını MIME türünden al
+    const extension = getExtensionFromMimeType(fileType);
+    if (!extension) {
+      throw new Error("Desteklenmeyen dosya türü.");
+    }
+
+    const fileName = `${Date.now()}.${extension}`;
+
+    // Dosyayı Google Cloud Storage'a kaydet
+    const file = bucket.file(fileName);
+    await file.save(fileBuffer);
+
+    // Dosyanın MIME türünü ayarlamak için metadata ekleyelim
+    await file.setMetadata({
+      contentType: fileType,
+    });
+
+    return `https://storage.googleapis.com/${bucketName}/${fileName}`;
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Dosya yükleme hatası:", error);
+    throw error;
   }
 }
 
+// MIME türünden uzantıyı al
+function getExtensionFromMimeType(mimeType) {
+  const mimeToExtensionMap = {
+    "image/png": "png",
+    "image/jpeg": "jpg",
+    "application/pdf": "pdf",
+    "application/msword": "doc",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
+  };
+  return mimeToExtensionMap[mimeType] || null;
+}
 async function deleteFile(fileUrl) {
   try {
     if (fileUrl.includes(bucketName)) {
