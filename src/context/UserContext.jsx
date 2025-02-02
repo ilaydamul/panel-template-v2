@@ -13,7 +13,7 @@ export const UserProvider = (props) => {
     if (login) {
       try {
         axios
-          .get("/user")
+          .get("/users")
           .then((response) => {
             if (response.data.loggedIn === true) {
               setUser({

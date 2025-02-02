@@ -28,7 +28,9 @@ export default function Login() {
     setPending(true);
 
     try {
-      const response = await axios.post("/login", values);
+      const response = await axios.post("/login", values, {
+        withCredentials: true, // Kimlik bilgilerini gönder
+      });
       setPending(false);
 
       if (response.data.error) {
@@ -60,9 +62,10 @@ export default function Login() {
     setSubmitting(false);
   };
 
+  // .email("Geçerli bir e-posta adresi giriniz")
   const validationSchema = Yup.object({
     email: Yup.string()
-      .email("Geçerli bir e-posta adresi giriniz")
+
       .required("E-posta zorunludur"),
     password: Yup.string().required("Şifre zorunludur"),
   });
@@ -97,8 +100,8 @@ export default function Login() {
   return (
     <div className="bg-black before:animate-pulse before:bg-gradient-to-b before:from-gray-900 overflow-hidden before:via-[#c40471] before:to-gray-900 before:absolute">
       <div id="myDIV">
-        <div className="w-[100vw] h-[100vh] px-3 sm:px-5 flex items-center justify-center absolute">
-          <div className="w-full sm:w-1/2 lg:2/3 px-6 bg-gray-500 bg-opacity-20 bg-clip-padding backdrop-filter backdrop-blur-sm text-white z-50 py-4 rounded-lg">
+        <div className="w-[100vw] h-[100vh] px-3 sm:px-5 flex items-center justify-center absolute" >
+          <div className="w-full sm:w-1/2 lg:2/3 px-6 bg-gray-500 bg-opacity-20 bg-clip-padding backdrop-filter backdrop-blur-sm text-white z-50 py-4 rounded-lg" style={{ maxWidth: "420px" }}>
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
@@ -117,7 +120,7 @@ export default function Login() {
                       Email
                     </label>
                     <Field
-                      type="email"
+                      // type="email"
                       id="email"
                       name="email"
                       placeholder=""
